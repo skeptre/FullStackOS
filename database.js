@@ -2,6 +2,8 @@ const sqlite3 = require('sqlite3').verbose();
 
 const DBSOURCE = 'db.sqlite';
 
+const dbPath = process.env.DB_PATH || './db.sqlite';
+
 let db = new sqlite3.Database(DBSOURCE, (err) => {
     if(err){
         console.log(err.message);
@@ -27,7 +29,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             }
         );
 
-        
+
         db.run(`CREATE TABLE events (
                 event_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
@@ -69,7 +71,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                 asked_by INTEGER,
                 event_id INTEGER,
                 votes INTEGER,
-                FOREIGN KEY (asked_by) REFERENCES users(user_id)
+                FOREIGN KEY (asked_by) REFERENCES users(user_id),
                 FOREIGN KEY (event_id) REFERENCES events(event_id)
             )`, (err) => {
                 if(err){
@@ -87,13 +89,13 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             FOREIGN KEY (question_id) REFERENCES questions(question_id),
             FOREIGN KEY (voter_id) REFERENCES users(user_id)
         )`, (err) => {
-            if(err){
-                console.log('Votes table already created');
-            }else{
-                console.log('Votes table created');
+                if(err){
+                    console.log('Votes table already created');
+                }else{
+                    console.log('Votes table created');
+                }
             }
-        }
-    );
+        );
     }
 });
 

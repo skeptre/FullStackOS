@@ -1,7 +1,13 @@
+require('dotenv').config();
 const express = require('express');
 const morgan  = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const userRoutes = require("./app/routes/user.server.routes");
+const eventRoutes = require("./app/routes/event.server.routes");
+const questionRoutes = require("./app/routes/question.server.routes");
+const searchRoutes = require("./app/routes/search.server.routes");
+const attendanceRoutes = require("./app/routes/attendance.server.routes");
 
 
 const app = express();
@@ -29,9 +35,11 @@ app.get('/', (req, res, next) => {
 
 // Other API endpoints: Links go here...
 // You can uncomment the below four lines as you implement the functionality - we'll discuss this structure in week three.
-// require('./app/routes/user.server.routes')(app);
-// require('./app/routes/event.server.routes')(app);
-// require('./app/routes/question.server.routes')(app);
+app.use('/users', userRoutes);
+app.use('/events', eventRoutes);
+app.use('/questions', questionRoutes);
+app.use('/search', searchRoutes);
+app.use('/attendance', attendanceRoutes);
 
 
 // Default response for any other request
