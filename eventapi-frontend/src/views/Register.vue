@@ -1,59 +1,185 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
-      <h1 class="text-2xl font-bold mb-4 text-center">Register</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100">
+    <!-- Navigation Bar -->
+    <nav class="navbar w-full py-3 px-8 flex justify-between items-center bg-black shadow-md">
+      <div class="text-xl font-bold text-silver">Eventitude</div>
+      <div class="flex gap-4">
+        <router-link to="/events" class="link">Events</router-link>
+        <router-link to="/search" class="link">Search</router-link>
+        <button @click="signOut" class="btn btn-secondary">Sign Out</button>
+      </div>
+    </nav>
+
+    <!-- Form Section -->
+    <div class="form-container">
+      <h1 class="form-title">Create an Account</h1>
       <form @submit.prevent="handleRegister">
-        <div class="mb-4">
-          <label for="first_name" class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
-          <input v-model="firstName" id="first_name" type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your first name" required />
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <input v-model="firstName" id="first_name" type="text" placeholder="First Name" />
         </div>
-        <div class="mb-4">
-          <label for="last_name" class="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
-          <input v-model="lastName" id="last_name" type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your last name" required />
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <input v-model="lastName" id="last_name" type="text" placeholder="Last Name" />
         </div>
-        <div class="mb-4">
-          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-          <input v-model="email" id="email" type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your email" required />
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input v-model="email" id="email" type="email" placeholder="Email Address" />
         </div>
-        <div class="mb-6">
-          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-          <input v-model="password" id="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your password" required />
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input v-model="password" id="password" type="password" placeholder="Password" />
         </div>
-        <div class="flex items-center justify-between">
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Register</button>
-        </div>
+        <button type="submit" class="btn btn-primary w-full mt-4">Register</button>
       </form>
-      <p class="mt-4 text-center">
+      <p class="text-center mt-3 text-light-gray">
         Already have an account?
-        <router-link to="/login" class="text-blue-500 hover:underline">Login</router-link>
+        <router-link to="/login" class="text-gold hover:underline">Login</router-link>
       </p>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
-  data() {
-    return {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    };
-  },
   setup() {
     const router = useRouter();
+    const firstName = ref('');
+    const lastName = ref('');
+    const email = ref('');
+    const password = ref('');
 
     function handleRegister() {
-      console.log('Registering user:', this.firstName, this.lastName);
+      console.log('Registering:', firstName.value, lastName.value, email.value, password.value);
+      router.push('/login');
+    }
+
+    function signOut() {
+      console.log('Signing out...');
       router.push('/login');
     }
 
     return {
+      firstName,
+      lastName,
+      email,
+      password,
       handleRegister,
+      signOut,
     };
   },
 };
 </script>
+
+<style scoped>
+/* Navigation Bar */
+.navbar {
+  font-family: 'Helvetica Neue', sans-serif;
+  border-bottom: 1px solid #444;
+}
+
+.link {
+  font-size: 0.9rem;
+  color: #aaa;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.link:hover {
+  color: #e63946;
+}
+
+/* Form Container */
+.form-container {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  width: 400px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.form-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #e63946;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #ddd;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #2a2a2a;
+  color: #eee;
+}
+
+input::placeholder {
+  color: #888;
+}
+
+input:focus {
+  outline: none;
+  border-color: #e63946;
+  box-shadow: 0 0 4px rgba(230, 57, 70, 0.6);
+}
+
+.btn {
+  font-size: 1rem;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #e63946, #d62828);
+  color: white;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #b22222;
+}
+
+.btn-secondary {
+  background: #2a2a2a;
+  color: #ddd;
+}
+
+.btn-secondary:hover {
+  background: #3a3a3a;
+}
+
+/* Gold Link Styling */
+.text-gold {
+  color: #FFD700; /* Gold */
+}
+
+.text-gold:hover {
+  color: #FFC300; /* Slightly brighter gold */
+}
+
+/* Light Gray Text for Contrast */
+.text-light-gray {
+  color: #ccc;
+}
+</style>

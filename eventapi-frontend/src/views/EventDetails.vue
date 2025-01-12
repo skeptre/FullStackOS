@@ -1,10 +1,21 @@
 <template>
-  <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Event Details</h1>
-    <p>Event Name: {{ event.name }}</p>
-    <p>Description: {{ event.description }}</p>
-    <p>Location: {{ event.location }}</p>
-    <p>Date: {{ event.date }}</p>
+  <div class="min-h-screen bg-gray-100 p-6">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-bold mb-4">{{ event.name }}</h1>
+      <p class="text-gray-700">{{ event.description }}</p>
+      <p class="mt-4 text-gray-700">
+        Location: <strong>{{ event.location }}</strong>
+      </p>
+      <p class="mt-2 text-gray-700">
+        Date: <strong>{{ event.date }}</strong>
+      </p>
+      <router-link
+          to="/events"
+          class="mt-6 inline-block text-blue-500 hover:underline"
+      >
+        Back to Events
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -14,8 +25,8 @@ export default {
     return {
       event: {
         name: 'Sample Event',
-        description: 'This is a sample event description.',
-        location: 'New York',
+        description: 'Detailed description of the event goes here.',
+        location: 'City Hall',
         date: '2025-01-15',
       },
     };

@@ -7,11 +7,11 @@ import Search from '../views/Search.vue';
 
 const routes = [
     { path: '/', redirect: '/login' },
-    { path: '/login', name: 'login', component: Login },
-    { path: '/register', name: 'register', component: Register },
-    { path: '/events', name: 'events', component: Events },
-    { path: '/events/:id', name: 'eventDetails', component: EventDetails },
-    { path: '/search', name: 'search', component: Search },
+    { path: '/login', name: 'Login', component: Login },
+    { path: '/register', name: 'Register', component: Register },
+    { path: '/events', name: 'Events', component: Events },
+    { path: '/events/:id', name: 'EventDetails', component: EventDetails },
+    { path: '/search', name: 'Search', component: Search },
 ];
 
 const router = createRouter({
