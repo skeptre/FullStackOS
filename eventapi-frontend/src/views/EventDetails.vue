@@ -1,21 +1,14 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-6">
-    <div class="container mx-auto">
-      <h1 class="text-3xl font-bold mb-4">{{ event.name }}</h1>
-      <p class="text-gray-700">{{ event.description }}</p>
-      <p class="mt-4 text-gray-700">
-        Location: <strong>{{ event.location }}</strong>
-      </p>
-      <p class="mt-2 text-gray-700">
-        Date: <strong>{{ event.date }}</strong>
-      </p>
-      <router-link
-          to="/events"
-          class="mt-6 inline-block text-blue-500 hover:underline"
-      >
-        Back to Events
-      </router-link>
-    </div>
+  <div class="min-h-screen flex flex-col items-center bg-gray-900 p-6">
+    <header class="w-full bg-black p-4 flex justify-between items-center">
+      <h1 class="text-3xl text-red-500">Eventitude</h1>
+      <button @click="goBack" class="bg-gray-700 p-2 rounded hover:bg-gray-800">Back</button>
+    </header>
+    <main class="bg-gray-800 p-6 rounded shadow-md w-2/3">
+      <h2 class="text-4xl text-white">{{ event.name }}</h2>
+      <p class="text-gray-300 mt-4">{{ event.description }}</p>
+      <button class="bg-red-500 mt-6 p-2 rounded hover:bg-red-700">Register</button>
+    </main>
   </div>
 </template>
 
@@ -25,11 +18,14 @@ export default {
     return {
       event: {
         name: 'Sample Event',
-        description: 'Detailed description of the event goes here.',
-        location: 'City Hall',
-        date: '2025-01-15',
+        description: 'Detailed description of the event.',
       },
     };
+  },
+  methods: {
+    goBack() {
+      this.$router.push('/events');
+    },
   },
 };
 </script>

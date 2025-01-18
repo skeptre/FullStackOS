@@ -1,33 +1,20 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-6">
-    <div class="container mx-auto">
-      <h1 class="text-3xl font-bold mb-6">Search Events</h1>
-      <div class="mb-6">
-        <input
-            v-model="query"
-            @input="searchEvents"
-            type="text"
-            class="w-full p-3 border rounded"
-            placeholder="Search for events..."
-        />
-      </div>
-      <ul class="space-y-4">
-        <li
-            v-for="event in filteredEvents"
-            :key="event.id"
-            class="p-4 bg-white rounded shadow-md hover:shadow-lg transition"
-        >
-          <h2 class="text-xl font-bold">{{ event.name }}</h2>
-          <p class="text-gray-700">{{ event.description }}</p>
-          <router-link
-              :to="`/events/${event.id}`"
-              class="mt-2 inline-block text-blue-500 hover:underline"
-          >
-            View Details
-          </router-link>
+  <div class="min-h-screen flex flex-col items-center bg-gray-900">
+    <header class="w-full bg-black p-4 flex justify-between items-center">
+      <h1 class="text-3xl text-red-500">Eventitude</h1>
+      <button @click="signOut" class="bg-red-600 p-2 rounded hover:bg-red-700">Sign Out</button>
+    </header>
+    <main class="flex-grow flex flex-col items-center p-6">
+      <h2 class="text-3xl text-silver mb-4">Search Events</h2>
+      <input v-model="query" class="p-2 w-1/2 rounded mb-4" placeholder="Search..." />
+      <button @click="search" class="bg-red-500 p-2 rounded hover:bg-red-700">Search</button>
+      <ul v-if="results.length" class="mt-6 w-full max-w-lg space-y-4">
+        <li v-for="result in results" :key="result.id" class="p-4 bg-gray-800 rounded">
+          <h3 class="text-xl text-silver">{{ result.name }}</h3>
+          <p class="text-gray-400">{{ result.description }}</p>
         </li>
       </ul>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -36,24 +23,15 @@ export default {
   data() {
     return {
       query: '',
-      events: [
-        { id: 1, name: 'Event Alpha', description: 'Alpha event details' },
-        { id: 2, name: 'Event Beta', description: 'Beta event details' },
-      ],
+      results: [],
     };
   },
-  computed: {
-    filteredEvents() {
-      return this.events.filter((event) =>
-          event.name.toLowerCase().includes(this.query.toLowerCase())
-      );
-    },
-  },
   methods: {
-    searchEvents() {
-      // For now, we don't need additional logic here since the computed property
-      // `filteredEvents` will automatically react to changes in `query`.
-      console.log(`Searching for: ${this.query}`);
+    search() {
+      alert(`Searching for: ${this.query}`);
+    },
+    signOut() {
+      this.$router.push('/login');
     },
   },
 };
