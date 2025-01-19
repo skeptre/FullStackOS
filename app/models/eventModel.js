@@ -7,7 +7,7 @@ const createEvent = (eventData, callback) => {
         `INSERT INTO events (name, description, location, start_date, close_registration, max_attendees, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [name, description, location, start_date, close_registration, max_attendees, creator_id],
         function (err) {
-            callback(err, this ? this.lastID : null); // Return the ID of the newly created event
+            callback(err, this ? this.lastID : null);
         }
     );
 };
@@ -24,7 +24,7 @@ const updateEvent = (eventId, eventData, callback) => {
         `UPDATE events SET name = ?, description = ?, location = ?, start_date = ?, close_registration = ?, max_attendees = ? WHERE event_id = ?`,
         [name, description, location, start_date, close_registration, max_attendees, eventId],
         function (err) {
-            callback(err, this.changes); // Return the number of rows affected
+            callback(err, this.changes);
         }
     );
 };
@@ -32,7 +32,7 @@ const updateEvent = (eventId, eventData, callback) => {
 // Delete event
 const deleteEvent = (eventId, callback) => {
     db.run(`DELETE FROM events WHERE event_id = ?`, [eventId], function (err) {
-        callback(err, this.changes); // Return the number of rows affected
+        callback(err, this.changes);
     });
 };
 

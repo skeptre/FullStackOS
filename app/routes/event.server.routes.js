@@ -4,10 +4,9 @@ const middleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Define event-related routes
-router.post('/events', middleware, createEvent); // Create an event
-router.get('/events/:id', middleware, getEvent); // Get event details
-router.patch('/events/:id', middleware,updateEvent); // Update an event
-router.delete('/events/:id', middleware, deleteEvent); // Archive/delete an event
+router.post('/events', middleware, createEvent);
+router.get('/events/:id', middleware, getEvent);
+router.patch('/events/:id', middleware, updateEvent);
+router.delete('/events/:id', middleware, deleteEvent);
 
 module.exports = router;

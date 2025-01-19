@@ -1,4 +1,4 @@
-const { registerForEvent, unregisterFromEvent, isUserRegistered } = require('../models/attendanceModel'); // Import model functions
+const { registerForEvent, unregisterFromEvent, isUserRegistered } = require('../models/attendanceModel');
 const Joi = require('joi');
 
 // Validation schema for event and user IDs
@@ -19,7 +19,6 @@ exports.registerForEvent = (req, res) => {
 
     isUserRegistered(eventId, userId, (err, result) => {
         if (err) {
-            console.error('Error checking user registration:', err);
             return res.status(500).json({ success: false, error_message: 'Database error' });
         }
         if (result) {
@@ -28,7 +27,6 @@ exports.registerForEvent = (req, res) => {
 
         registerForEvent(eventId, userId, (err, registrationId) => {
             if (err) {
-                console.error('Error during registration:', err);
                 return res.status(500).json({ success: false, error_message: 'Database error during registration' });
             }
             res.status(201).json({
@@ -52,7 +50,6 @@ exports.unregisterFromEvent = (req, res) => {
 
     unregisterFromEvent(eventId, userId, (err, changes) => {
         if (err) {
-            console.error('Error during unregistration:', err);
             return res.status(500).json({ success: false, error_message: 'Database error' });
         }
         if (changes === 0) {

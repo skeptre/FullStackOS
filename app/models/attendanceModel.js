@@ -1,4 +1,4 @@
-const db = require('../../database.js'); // Import database connection
+const db = require('../../database.js');
 
 // Register a user for an event
 const registerForEvent = (eventId, userId, callback) => {
@@ -6,7 +6,7 @@ const registerForEvent = (eventId, userId, callback) => {
         `INSERT INTO attendees (event_id, user_id) VALUES (?, ?)`,
         [eventId, userId],
         function (err) {
-            callback(err, this ? this.lastID : null); // Return the registration ID
+            callback(err, this ? this.lastID : null);
         }
     );
 };
@@ -17,7 +17,7 @@ const unregisterFromEvent = (eventId, userId, callback) => {
         `DELETE FROM attendees WHERE event_id = ? AND user_id = ?`,
         [eventId, userId],
         function (err) {
-            callback(err, this.changes); // Return the number of rows affected
+            callback(err, this.changes);
         }
     );
 };
