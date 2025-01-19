@@ -3,10 +3,13 @@ const { createUser, loginUser, logoutUser } = require('../controllers/userContro
 
 const router = express.Router();
 
-// Define routes for user-related operations
-router.post('/users', createUser); // Create a new user
-router.post('/login', loginUser);  // Login a user
-router.post('/logout', logoutUser);
+// Register a new user
+router.post('/users', createUser);
 
+// Login a user
+router.post('/login', loginUser);
+
+// Logout a user
+router.post('/logout', logoutUser);
 
 module.exports = router;
