@@ -79,6 +79,8 @@ export default {
 .navbar {
   font-family: 'Helvetica Neue', sans-serif;
   border-bottom: 1px solid #444;
+  color: black;
+  background-color: white;
 }
 
 .link {
