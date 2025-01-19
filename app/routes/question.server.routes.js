@@ -1,19 +1,11 @@
 const express = require('express');
-const questionController = require('../controllers/questionController.js');
 const authMiddleware = require('../middleware/authMiddleware');
+const questionController = require('../controllers/questionController');
 
 const router = express.Router();
 
-// Add a question to an event
-router.post('/event/:event_id/question', authMiddleware, questionController.addQuestion);
-
-// Delete a question
-router.delete('/question/:question_id', authMiddleware, questionController.deleteQuestion);
-
-// Upvote a question
-router.post('/question/:question_id/vote', authMiddleware, questionController.upvoteQuestion);
-
-// Downvote a question
-router.delete('/question/:question_id/vote', authMiddleware, questionController.downvoteQuestion);
+// Question routes
+router.post('/:eventId', authMiddleware, questionController.addQuestion);
+router.delete('/:id', authMiddleware, questionController.deleteQuestion);
 
 module.exports = router;

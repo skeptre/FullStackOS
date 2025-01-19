@@ -1,32 +1,29 @@
 const db = require('../../database.js');
 
-// Search for events with filters
-const searchEvents = (filters, callback) => {
-    const { q, status, limit = 20, offset = 0 } = filters;
+exports.searchEvents = (queryParams) => {
+    const { query, status, limit, offset } = queryParams;
+    const conditions = [];
+    const values = [];
 
-    let query = `SELECT * FROM events`;
-    const params = [];
-
-    // Apply search keyword filter
-    if (q) {
-        query += ` WHERE name LIKE ? OR description LIKE ?`;
-        params.push(`%${q}%`, `%${q}%`);
+    if (query) {
+        conditions.push("(name LIKE ? OR description LIKE ?)");
+        values.push(`%${query}%`, `%${query}%`);
     }
 
-    // Apply status filter
     if (status) {
-        query += q ? ` AND` : ` WHERE`;
-        query += ` status = ?`;
-        params.push(status);
+        conditions.push("status = ?");
+        values.push(status);
     }
 
-    // Apply limit and offset for pagination
-    query += ` LIMIT ? OFFSET ?`;
-    params.push(Number(limit), Number(offset));
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    const sql = `SELECT * FROM events ${whereClause} LIMIT ? OFFSET ?`;
 
-    db.all(query, params, callback);
-};
+    values.push(limit || 20, offset || 0);
 
-module.exports = {
-    searchEvents,
+    return new Promise((resolve, reject) => {
+        db.all(sql, values, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
 };

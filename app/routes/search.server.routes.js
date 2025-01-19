@@ -1,10 +1,10 @@
 const express = require('express');
-const { searchEvents } = require('../controllers/searchController.js');
+const { search } = require('../controllers/searchController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Search for events
-router.get('/search', authMiddleware, searchEvents);
+// Search route with optional authentication
+router.get('/', authMiddleware, search);
 
 module.exports = router;

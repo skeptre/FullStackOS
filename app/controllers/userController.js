@@ -1,66 +1,38 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Joi = require('joi');
-const { createUser: createUserModel, validateUserCredentials } = require('../models/userModel');
+const { createUser, validateUserCredentials, isTokenValid, invalidateToken } = require('../models/userModel');
 
-// Token store (temporary solution for logged-in users)
-const tokenStore = {};
+exports.registerUser = async (req, res) => {
+    const { first_name, last_name, email, password } = req.body;
 
-// Joi schema for user registration
-const userSchema = Joi.object({
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).max(128).required()
-});
-
-// Joi schema for user login
-const loginSchema = Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required()
-});
-
-// Register User
-exports.createUser = async (req, res) => {
-    const { error, value } = userSchema.validate(req.body);
-    if (error) {
-        const message = error.details[0].message.replace(/"/g, '');
-        return res.status(400).json({ error_message: message });
+    if (!first_name || !last_name || !email || !password) {
+        return res.status(400).json({ error_message: 'All fields are required' });
     }
-
-    const { first_name, last_name, email, password } = value;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userData = { first_name, last_name, email, password: hashedPassword };
 
-        createUserModel(userData, (err, userId) => {
+        createUser({ first_name, last_name, email, password: hashedPassword }, (err, userId) => {
             if (err) {
                 if (err.code === 'SQLITE_CONSTRAINT') {
                     return res.status(400).json({ error_message: 'Email already registered' });
                 }
                 return res.status(500).json({ error_message: 'Database error' });
             }
-            res.status(201).json({
-                user_id: userId,
-                message: 'User registered successfully'
-            });
+            res.status(201).json({ user_id: userId, message: 'User registered successfully' });
         });
-    } catch (error) {
-        console.error('Error in createUser:', error);
-        res.status(500).json({ error_message: 'Internal server error' });
+    } catch (err) {
+        console.error('Error during registration:', err);
+        return res.status(500).json({ error_message: 'Registration failed' });
     }
 };
 
-// Log In User
-exports.loginUser = (req, res) => {
-    const { error, value } = loginSchema.validate(req.body);
-    if (error) {
-        const message = error.details[0].message.replace(/"/g, '');
-        return res.status(400).json({ error_message: message });
-    }
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
 
-    const { email, password } = value;
+    if (!email || !password) {
+        return res.status(400).json({ error_message: 'Email and password are required' });
+    }
 
     validateUserCredentials(email, async (err, user) => {
         if (err || !user) {
@@ -72,44 +44,45 @@ exports.loginUser = (req, res) => {
             return res.status(400).json({ error_message: 'Invalid email or password' });
         }
 
-        // Return the same token if the user is already logged in
-        if (tokenStore[user.user_id]) {
-            return res.status(200).json({
+        try {
+            const existingToken = await isTokenValid(user.user_id);
+            if (existingToken) {
+                return res.status(200).json({
+                    user_id: user.user_id,
+                    session_token: existingToken,
+                    message: 'Already logged in',
+                });
+            }
+
+            const session_token = jwt.sign({ user_id: user.user_id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+
+            res.status(200).json({
                 user_id: user.user_id,
-                session_token: tokenStore[user.user_id],
-                message: 'Login successful'
+                session_token,
+                message: 'Login successful',
             });
+        } catch (error) {
+            console.error('Error in login process:', error);
+            return res.status(500).json({ error_message: 'Error during login process' });
         }
-
-        // Generate a new session token
-        const session_token = jwt.sign({ user_id: user.user_id }, process.env.SECRET_KEY, { expiresIn: '1h' });
-        tokenStore[user.user_id] = session_token;
-
-        res.status(200).json({
-            user_id: user.user_id,
-            session_token,
-            message: 'Login successful'
-        });
     });
 };
 
-// Log Out User
-exports.logoutUser = (req, res) => {
-    const token = req.headers['x-authorization'];
-    if (!token) {
-        return res.status(401).json({ error_message: 'Access token required' });
+exports.logoutUser = async (req, res) => {
+    const userId = req.user?.user_id;
+
+    if (!userId) {
+        return res.status(401).json({ error_message: 'User not authenticated' });
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        if (!tokenStore[decoded.user_id]) {
-            return res.status(401).json({ error_message: 'User not logged in or already logged out' });
+        const success = await invalidateToken(userId);
+        if (success) {
+            return res.status(200).json({ message: 'Logout successful' });
         }
-
-        // Remove the token from the store
-        delete tokenStore[decoded.user_id];
-        res.status(200).json({ message: 'Logout successful' });
+        return res.status(500).json({ error_message: 'Failed to logout' });
     } catch (err) {
-        return res.status(401).json({ error_message: 'Invalid or expired token' });
+        console.error('Error during logout:', err);
+        return res.status(500).json({ error_message: 'Logout failed' });
     }
 };
