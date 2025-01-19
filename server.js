@@ -35,7 +35,7 @@ app.get('/', (req, res, next) => {
 
 // Other API endpoints: Links go here...
 // You can uncomment the below four lines as you implement the functionality - we'll discuss this structure in week three.
-app.use('/users', userRoutes);
+app.use('/', userRoutes);
 app.use('/events', eventRoutes);
 app.use('/questions', questionRoutes);
 app.use('/search', searchRoutes);
