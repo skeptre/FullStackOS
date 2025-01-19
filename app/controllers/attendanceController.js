@@ -1,10 +1,8 @@
-const { registerAttendance } = require('../models/attendanceModel');
+const { registerForEvent } = require('../models/attendanceModel');
 
-exports.registerAttendance = async (req, res) => {
-    try {
-        await registerAttendance(req.params.eventId, req.user.user_id);
-        res.status(200).json({ message: 'Attendance registered successfully' });
-    } catch (err) {
-        res.status(400).json({ error_message: err.message });
-    }
+exports.registerAttendance = (req, res) => {
+    registerForEvent(req.params.eventId, req.user.user_id, (err) => {
+        if (err) return res.status(400).json({ error_message: 'Unable to register for event' });
+        res.status(200).json({ message: 'Registered successfully' });
+    });
 };

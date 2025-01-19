@@ -49,3 +49,18 @@ exports.invalidateToken = (userId) => {
         });
     });
 };
+
+exports.createSession = (userId, sessionToken) => {
+    return new Promise((resolve, reject) => {
+        const deleteQuery = `DELETE FROM sessions WHERE user_id = ?`;
+        db.run(deleteQuery, [userId], (err) => {
+            if (err) return reject(err);
+
+            const insertQuery = `INSERT INTO sessions (user_id, session_token) VALUES (?, ?)`;
+            db.run(insertQuery, [userId, sessionToken], (err) => {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+    });
+};

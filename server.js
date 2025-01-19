@@ -1,3 +1,4 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
@@ -7,9 +8,9 @@ const cors = require('cors');
 // Import routes
 const userRoutes = require("./app/routes/user.server.routes");
 const eventRoutes = require("./app/routes/event.server.routes");
+const attendanceRoutes = require("./app/routes/attendance.server.routes");
 const searchRoutes = require("./app/routes/search.server.routes");
 const questionRoutes = require("./app/routes/question.server.routes");
-const attendanceRoutes = require("./app/routes/attendance.server.routes");
 
 const app = express();
 app.use(cors());
@@ -37,9 +38,9 @@ app.get('/', (req, res, next) => {
 // API endpoints
 app.use('/', userRoutes);
 app.use('/events', eventRoutes);
+app.use('/attendance', attendanceRoutes);
 app.use('/search', searchRoutes);
 app.use('/questions', questionRoutes);
-app.use('/attendance', attendanceRoutes);
 
 // Default response for any other request
 app.use((req, res) => {
